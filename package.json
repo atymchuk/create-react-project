@@ -1,0 +1,21 @@
+{
+  "name": "@roox/create-react-project",
+  "version": "1.0.0",
+  "description": "A thin wrapper around Facebook's create-react-app which adds some common libraries needed for most medium to large-sized web apps",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/atymchuk/create-react-project"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "https://github.com/atymchuk",
+  "license": "MIT",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "shelljs": "^0.7.8"
+  },
+  "bin": "index.js"
+}
