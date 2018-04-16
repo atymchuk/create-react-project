@@ -35,7 +35,7 @@ const run = () => {
       return updateTemplates();
     })
     .then(() => {
-      console.log("All jobs done!".green);
+      console.log("\nAll jobs done!".green);
     })
     .catch(error => console.error(error));
 };
@@ -75,7 +75,7 @@ const installPackages = () => {
     })
     .then(code => {
       if (!code) {
-        console.log("\nFinished installing packages\n".green);
+        console.log("\nFinished installing packages".green);
       } else {
         throw new Error(`Package installation failed with code ${code}`);
       }
