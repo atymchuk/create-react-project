@@ -20,8 +20,6 @@ const run = () => {
   createReactApp(appName)
     .then(message => {
       console.log(`\n${message}`.green);
-    })
-    .then(() => {
       return cdIntoNewDir();
     })
     .then(() => {
@@ -34,7 +32,9 @@ const run = () => {
       console.log("\nAll jobs done!".green);
     })
     .catch(error => {
-      console.log('\nSomething went wrong while trying to create a new React app using create-react-app'.red);
+      if (!error) {
+        return console.log('\nSomething went wrong while trying to create a new app using original create-react-app'.red);
+      } 
       console.error('\nError:', error);
     });
 };
