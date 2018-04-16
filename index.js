@@ -44,7 +44,7 @@ const createReactApp = (name) => {
     return Promise.resolve(name)
       .then(name => {
         if (name) {
-          return Promise.resolve(shell.exec(`npx create-react-app ${name}`))
+          return Promise.resolve(shell.exec(`npx create-react-app ${name}`).code)
             .then(code => {
               if (code) {
                 throw new Error(`Exited with non-zero code: ${code}`);
@@ -62,8 +62,7 @@ const createReactApp = (name) => {
 
 const cdIntoNewDir = () => {
     return Promise.resolve(shell.cd(appDirectory))
-      .then((code) => {
-        console.log(`cd return code: ${code}`);
+      .then(() => {
         console.log(`cd into new directory: ${appDirectory}`);
       });
 };
@@ -72,7 +71,7 @@ const installPackages = () => {
   return Promise.resolve()
     .then(() => {
       console.log("\nInstalling redux, react-router, react-router-dom, react-redux, and redux-thunk\n".cyan);
-      return shell.exec(`yarn add redux react-router react-redux redux-thunk react-router-dom`);
+      return shell.exec(`yarn add redux react-router react-redux redux-thunk react-router-dom`).code;
     })
     .then(code => {
       if (!code) {
