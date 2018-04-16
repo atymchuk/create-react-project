@@ -1,7 +1,12 @@
 #!/usr/bin/env node
+const Promise = require('bluebird');
 const shell = require('shelljs');
 const colors = require('colors');
 const fs = require('fs');
+
+const exec = Promise.promisify(shell.exec);
+const cd = Promise.promisify(shell.cd);
+
 const templates = [
     'App.js',
     'index.js',
@@ -15,53 +20,66 @@ const templates = [
 const appName = process.argv[2];
 const appDirectory = `${process.cwd()}/${appName}`;
 
-const run = async () => {
-  const success = await createReactApp(appName);
-  if (!success){
-    console.log('Something went wrong while trying to create a new React app using create-react-app'.red);
-    return false;
-  }
-  await cdIntoNewDir();
-  console.log('step 1 done');
-  await installPackages();
-  console.log('step 2 done');
-  await updateTemplates();
-  console.log("All 3 steps done");
+const run = () => {
+  createReactApp(appName)
+    .then(message => {
+      console.log(`\n${message}`.green);
+    })
+    .catch((error) => {
+      console.log('\nSomething went wrong while trying to create a new React app using create-react-app'.red);
+      console.error("\nError:", error);
+    })
+    .then(() => {
+      return cdIntoNewDir();
+    })
+    .then(() => {
+      return installPackages();
+    })
+    .then(() => {
+      return updateTemplates();
+    })
+    .then(() => {
+      console.log("All jobs done!".green);
+    });
 };
 
 const createReactApp = (name) => {
-  return new Promise(resolve => {
-    if (name) {
-      shell.exec(`npx create-react-app ${name}`, (code) => {
-        console.log("Exited with code ", code);
-        console.log("Created react app");
-        resolve(true);
-      })
-    } else {
-      console.log("\nNo app name was provided.".red);
-      console.log("\nProvide an app name in the following format: ");
-      console.log("\ncreate-react-app ", "app-name\n".cyan);
-      resolve(false);
-    }
-  });
+    return Promise.resolve(name)
+      .then(name => {
+        if (name) {
+          return exec(`npx create-react-app ${name}`)
+            .then(code => {
+              if (code) {
+                throw new Error(`Exited with non-zero code: ${code}`);
+              } else 
+                return `Created react app: ${name}`;
+            });
+        } else {
+          console.log("\nNo app name was provided.".red);
+          console.log("\nProvide an app name in the following format: ".grey);
+          console.log("\ncreate-react-app ", "app-name\n".cyan);
+          throw new Error('No app name provided');
+        }
+    });
 };
 
 const cdIntoNewDir = () => {
-  return new Promise(resolve => {
-    shell.cd(appDirectory);
-    console.log(`cd into new directory: ${appDirectory}`);
-    resolve();
-  });
+    return cd(appDirectory)
+      .then((code) => {
+        console.log(`cd return code: ${code}`);
+        console.log(`cd into new directory: ${appDirectory}`);
+      });
 };
 
 const installPackages = () => {
-  return new Promise(resolve => {
-    console.log("\nInstalling redux, react-router, react-router-dom, react-redux, and redux-thunk\n".cyan)
-    shell.exec(`npm install -D redux react-router react-redux redux-thunk react-router-dom`, () => {
-      console.log("\nFinished installing packages\n".green)
-      resolve()
-    })
-  })
+  return Promise.resolve()
+    .then(() => {
+      console.log("\nInstalling redux, react-router, react-router-dom, react-redux, and redux-thunk\n".cyan);
+      exec(`yarn install -D redux react-router react-redux redux-thunk react-router-dom`)
+        .then(() => {
+          console.log("\nFinished installing packages\n".green);
+        });
+    });
 };
 
 const updateTemplates = () => {
