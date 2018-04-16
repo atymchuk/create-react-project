@@ -21,10 +21,6 @@ const run = () => {
     .then(message => {
       console.log(`\n${message}`.green);
     })
-    .catch((error) => {
-      console.log('\nSomething went wrong while trying to create a new React app using create-react-app'.red);
-      console.error("\nError:", error);
-    })
     .then(() => {
       return cdIntoNewDir();
     })
@@ -37,7 +33,10 @@ const run = () => {
     .then(() => {
       console.log("\nAll jobs done!".green);
     })
-    .catch(error => console.error(error));
+    .catch(error => {
+      console.log('\nSomething went wrong while trying to create a new React app using create-react-app'.red);
+      console.error('\nError:', error);
+    });
 };
 
 const createReactApp = (name) => {
@@ -53,9 +52,9 @@ const createReactApp = (name) => {
             });
         } else {
           console.log("\nNo app name was provided.".red);
-          console.log("\nProvide an app name in the following format: ".grey);
-          console.log("\ncreate-react-app ", "app-name\n".cyan);
-          throw new Error('No app name provided');
+          console.log("\nUsage: ".grey);
+          console.log("\create-react-app ", "app-name\n".cyan);
+          throw new Error('');
         }
     });
 };
