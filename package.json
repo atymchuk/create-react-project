@@ -14,7 +14,6 @@
   "author": "https://github.com/atymchuk",
   "license": "MIT",
   "dependencies": {
-    "bluebird": "^3.5.1",
     "colors": "^1.1.2",
     "shelljs": "^0.7.8"
   },

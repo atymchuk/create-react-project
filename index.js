@@ -1,11 +1,7 @@
 #!/usr/bin/env node
-const Promise = require('bluebird');
 const shell = require('shelljs');
 const colors = require('colors');
 const fs = require('fs');
-
-const exec = Promise.promisify(shell.exec);
-const cd = Promise.promisify(shell.cd);
 
 const templates = [
     'App.js',
@@ -40,14 +36,15 @@ const run = () => {
     })
     .then(() => {
       console.log("All jobs done!".green);
-    });
+    })
+    .catch(error => console.error(error));
 };
 
 const createReactApp = (name) => {
     return Promise.resolve(name)
       .then(name => {
         if (name) {
-          return exec(`npx create-react-app ${name}`)
+          return Promise.resolve(shell.exec(`npx create-react-app ${name}`))
             .then(code => {
               if (code) {
                 throw new Error(`Exited with non-zero code: ${code}`);
@@ -64,7 +61,7 @@ const createReactApp = (name) => {
 };
 
 const cdIntoNewDir = () => {
-    return cd(appDirectory)
+    return Promise.resolve(shell.cd(appDirectory))
       .then((code) => {
         console.log(`cd return code: ${code}`);
         console.log(`cd into new directory: ${appDirectory}`);
@@ -75,10 +72,14 @@ const installPackages = () => {
   return Promise.resolve()
     .then(() => {
       console.log("\nInstalling redux, react-router, react-router-dom, react-redux, and redux-thunk\n".cyan);
-      exec(`yarn install -D redux react-router react-redux redux-thunk react-router-dom`)
-        .then(() => {
-          console.log("\nFinished installing packages\n".green);
-        });
+      return shell.exec(`yarn add redux react-router react-redux redux-thunk react-router-dom`);
+    })
+    .then(code => {
+      if (!code) {
+        console.log("\nFinished installing packages\n".green);
+      } else {
+        throw new Error(`Package installation failed with code ${code}`);
+      }
     });
 };
 
