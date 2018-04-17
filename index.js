@@ -54,7 +54,7 @@ const createReactApp = (name) => {
           console.log("\nNo app name was provided.".red);
           console.log("\nUsage: ".grey);
           console.log("\create-react-app ", "app-name\n".cyan);
-          throw new Error('');
+          return Promise.reject();
         }
     });
 };
